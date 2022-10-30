@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import 'product.dart';
 
 class Products_Prov with ChangeNotifier {
   //Mixin is similar to inheritance, Products mixes in the change notifier
@@ -46,6 +46,14 @@ class Products_Prov with ChangeNotifier {
     //returning a copy of items. if _items is returned directly,
     //we would return a pointer to _items directly, and everyone
     //will get direct access to the products class
+  }
+
+  List<Product> get favoriteItems {
+    return _items.where((element) => element.isFavorite).toList();
+  }
+
+  Product findById(String id) {
+    return _items.firstWhere((element) => element.id == id);
   }
 
   void addProduct() {

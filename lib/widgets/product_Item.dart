@@ -1,39 +1,54 @@
 import 'package:flutter/material.dart';
+import '../providers/cart.dart';
 import '../screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
+import '../providers/product.dart';
 
 class ProductItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl;
-  const ProductItem(
-      {@required this.id, @required this.imageUrl, @required this.title});
+  // final String id;
+  // final String title;
+  // final String imageUrl;
+  // const ProductItem(
+  //     {@required this.id, @required this.imageUrl, @required this.title});
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
+    // in this page, we do not need to rebuild the whole widget, so we set the listen option to false
+    // the only thing that updates is the favorite button
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context)
-                .pushNamed(ProductDetailScreen.routeName, arguments: id);
+            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+                arguments: product.id);
           },
           child: Image.network(
-            imageUrl,
+            product.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
         footer: GridTileBar(
-          leading: IconButton(
-              icon: Icon(Icons.favorite),
-              onPressed: () {},
-              color: Theme.of(context).colorScheme.secondary),
+          leading: Consumer<Product>(
+            builder: (ctx, product, child) => IconButton(
+                icon: Icon(product.isFavorite
+                    ? Icons.favorite
+                    : Icons.favorite_border),
+                onPressed: product.toggleFavorite,
+                color: Theme.of(context).colorScheme.secondary),
+          ),
+          // we wrap the widget of the leading argument, which is IconButton with a Consumer<Product>
+          // in order to avoid rebuilding of the whole widget, but instead to rebuild only the IconButton
           trailing: IconButton(
               icon: Icon(Icons.shopping_cart),
-              onPressed: () {},
+              onPressed: () {
+                cart.addItem(product.id, product.price, product.title);
+              },
               color: Theme.of(context).colorScheme.secondary),
           backgroundColor: Colors.black54,
           title: Text(
-            title,
+            product.title,
             textAlign: TextAlign.center,
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/cart.dart';
 
 import './screens/product_detail_screen.dart';
 import './screens/products_overview_screen.dart';
@@ -10,11 +11,18 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => Products_Prov(),
-      //all children of this class will now be notified about the changes
-      //so provider should be created at the highest level of the data demand
-      //rebuild will happen only in listeners, not in materialapp
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => Products_Prov(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Cart(),
+        ),
+        //all children of this class will now be notified about the changes
+        //so provider should be created at the highest level of the data demand
+        //rebuild will happen only in listeners, not in materialapp
+      ],
       child: MaterialApp(
         title: 'MyShop',
         theme: ThemeData(
