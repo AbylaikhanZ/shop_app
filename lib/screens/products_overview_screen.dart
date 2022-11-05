@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/screens/cart_screen.dart';
 import 'package:shop_app/widgets/badge.dart';
 import '../providers/product.dart';
 import '../widgets/product_grid.dart';
@@ -53,8 +54,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 Badge(child: ch, value: cart.countItems.toString()),
             //badge is a custom widget that shows the quantity of the items in cart on top right of the
             //shopping cart icon button.
-            child:
-                IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart)),
+            child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(CartScreen.routeName);
+                },
+                icon: Icon(Icons.shopping_cart)),
           )
           //Consumer gets the data from the cart provider, to update the quantity of the unique items in the cart
         ],

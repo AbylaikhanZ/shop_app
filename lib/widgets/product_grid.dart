@@ -32,11 +32,7 @@ class ProductGrid extends StatelessWidget {
         // but if we are using a newly created class, it is better to use "create"
         value: products[i],
         // provider creates an object for each product individually
-        child: ProductItem(
-            // id: products[i].id,
-            // imageUrl: products[i].imageUrl,
-            // title: products[i].title,
-            ),
+        child: ProductItem(),
       ),
     );
   }
