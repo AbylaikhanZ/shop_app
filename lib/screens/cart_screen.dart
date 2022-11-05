@@ -26,7 +26,11 @@ class CartScreen extends StatelessWidget {
                     quantity: cart.items.values.toList()[i].quantity,
                     title: cart.items.values.toList()[i].title,
                     imageURL: cart.items.values.toList()[i].imageURL,
+                    productId: cart.items.keys.toList()[i],
                   )),
+              //we use this weird way of sending the data because
+              //cart.items is a map, and we need to get to its values
+              //and keys separately
               itemCount: cart.items.length,
             )),
             //wrapped the listview to expanded, because listview
@@ -34,7 +38,7 @@ class CartScreen extends StatelessWidget {
 
             Card(
               margin: EdgeInsets.all(15),
-              elevation: 10,
+              elevation: 5,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(15))),
               child: Padding(
