@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/screens/cart_screen.dart';
+import 'package:shop_app/widgets/app_drawer.dart';
 import 'package:shop_app/widgets/badge.dart';
-import '../providers/product.dart';
 import '../widgets/product_grid.dart';
 
 enum FilterOptions {
@@ -63,6 +63,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           //Consumer gets the data from the cart provider, to update the quantity of the unique items in the cart
         ],
       ),
+      drawer: AppDrawer(),
       body: ProductGrid(_showOnlyFavorites),
       //sending the var to the widget
     );
