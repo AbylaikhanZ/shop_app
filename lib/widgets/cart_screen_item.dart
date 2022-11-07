@@ -22,6 +22,26 @@ class CartScreenItem extends StatelessWidget {
     return Dismissible(
       key: ValueKey(id),
       direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        return showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop(true);
+                          },
+                          child: Text("Yes")),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop(false);
+                          },
+                          child: Text("No")),
+                    ],
+                    content:
+                        Text("Do you want to remove the item from your cart?"),
+                    title: Text("Are you sure?")));
+      },
       background: ClipRRect(
         borderRadius: BorderRadius.circular(35),
         child: Container(
