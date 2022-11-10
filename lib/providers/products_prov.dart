@@ -56,10 +56,32 @@ class Products_Prov with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void addProduct() {
-    //_items.add(value);
+  void addProduct(Product product) {
+    final newProduct = Product(
+        id: DateTime.now().toString(),
+        description: product.description,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        title: product.title);
+    _items.add(newProduct);
     notifyListeners();
     // 'with ChangeNotifier' gives access to this functions, that lets everyone know about the changes
     //the changes of the _items have to be done inside this class, so that everyone will be notified
+  }
+
+  void updateProduct(String id, Product newProduct) {
+    final prodIndex =
+        _items.indexWhere((element) => element.id == newProduct.id);
+    if (prodIndex >= 0) {
+      _items[prodIndex] = newProduct;
+      notifyListeners();
+    } else {
+      print("...");
+    }
+  }
+
+  void deleteProduct(String id) {
+    _items.removeWhere((element) => element.id == id);
+    notifyListeners();
   }
 }
