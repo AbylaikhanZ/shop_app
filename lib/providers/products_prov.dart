@@ -57,10 +57,10 @@ class Products_Prov with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) {
     final url = Uri.parse(
         "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json");
-    http
+    return http
         .post(url,
             body: json.encode({
               "description": product.description,
