@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'product.dart';
+import 'dart:convert';
 
 class Products_Prov with ChangeNotifier {
   //Mixin is similar to inheritance, Products mixes in the change notifier
@@ -57,14 +58,28 @@ class Products_Prov with ChangeNotifier {
   }
 
   void addProduct(Product product) {
-    final newProduct = Product(
-        id: DateTime.now().toString(),
-        description: product.description,
-        imageUrl: product.imageUrl,
-        price: product.price,
-        title: product.title);
-    _items.add(newProduct);
-    notifyListeners();
+    final url = Uri.parse(
+        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json");
+    http
+        .post(url,
+            body: json.encode({
+              "description": product.description,
+              "imageUrl": product.imageUrl,
+              "price": product.price,
+              "title": product.title,
+              "isFavorite": product.isFavorite,
+            }))
+        .then((response) {
+      final newProduct = Product(
+          id: json.decode(response.body)["name"],
+          description: product.description,
+          imageUrl: product.imageUrl,
+          price: product.price,
+          title: product.title);
+      _items.add(newProduct);
+      notifyListeners();
+    });
+
     // 'with ChangeNotifier' gives access to this functions, that lets everyone know about the changes
     //the changes of the _items have to be done inside this class, so that everyone will be notified
   }
