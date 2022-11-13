@@ -57,29 +57,46 @@ class Products_Prov with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  Future<void> addProduct(Product product) {
+  Future<void> fetchProducts() async {
     final url = Uri.parse(
         "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json");
-    return http
-        .post(url,
-            body: json.encode({
-              "description": product.description,
-              "imageUrl": product.imageUrl,
-              "price": product.price,
-              "title": product.title,
-              "isFavorite": product.isFavorite,
-            }))
-        .then((response) {
+    try {
+      final response = await http.get(url);
+      
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> addProduct(Product product) async {
+    // async wraps all the code into Future
+    final url = Uri.parse(
+        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json");
+    //url of our database
+    try {
+      //wrap the parts of the code that might throw errors/exceptions
+      final response = await http.post(url,
+          body: json.encode({
+            "description": product.description,
+            "imageUrl": product.imageUrl,
+            "price": product.price,
+            "title": product.title,
+            "isFavorite": product.isFavorite,
+          }));
+      //posting the new product to DB. await is doing the action that
+      //will be done after the synced code is done
       final newProduct = Product(
           id: json.decode(response.body)["name"],
           description: product.description,
           imageUrl: product.imageUrl,
           price: product.price,
           title: product.title);
+
       _items.add(newProduct);
       notifyListeners();
-    });
-
+    } catch (error) {
+      throw error;
+    }
     // 'with ChangeNotifier' gives access to this functions, that lets everyone know about the changes
     //the changes of the _items have to be done inside this class, so that everyone will be notified
   }
