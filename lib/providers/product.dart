@@ -13,7 +13,7 @@ class Product with ChangeNotifier {
       {@required this.id,
       @required this.description,
       @required this.imageUrl,
-      this.isFavorite = false,
+      @required this.isFavorite,
       @required this.price,
       @required this.title});
   void toggleFavorite() {

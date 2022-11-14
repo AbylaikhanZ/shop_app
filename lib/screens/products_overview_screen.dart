@@ -19,13 +19,19 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _isInit = true;
+  var _isLoading = false;
   var _showOnlyFavorites =
       false; // We need this value to be sent to the Products Grid to apply filtering logic
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     if (_isInit) {
-      Provider.of<Products_Prov>(context).fetchProducts();
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products_Prov>(context)
+          .fetchProducts()
+          .then((_) => _isLoading = false);
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -75,7 +81,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductGrid(_showOnlyFavorites),
       //sending the var to the widget
     );
   }
