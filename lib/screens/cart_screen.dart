@@ -67,29 +67,73 @@ class CartScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               child: SizedBox.fromSize(
                 size: Size(double.infinity, 60),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Provider.of<Orders>(context, listen: false).addOrder(
-                      cart.items.values.toList(),
-                      cart.totalAmount,
-                    );
-                    cart.clear();
-                  },
-                  child: Text("ORDER NOW",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(5.0),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15))),
-                  ),
-                ),
+                child: OrderButton(cart: cart),
               ),
             )
           ],
           mainAxisAlignment: MainAxisAlignment.end,
         ),
+      ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: (widget.cart.totalAmount <= 0 || _isLoading == true)
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              try {
+                await Provider.of<Orders>(context, listen: false).addOrder(
+                  widget.cart.items.values.toList(),
+                  widget.cart.totalAmount,
+                );
+                setState(() {
+                  _isLoading = false;
+                });
+                widget.cart.clear();
+              } catch (error) {
+                await showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                          title: Text("An error occured!"),
+                          content: Text(
+                              "Something went wrong, when trying to make an order!"),
+                          actions: [
+                            TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text("Okay"))
+                          ],
+                        ));
+              }
+            },
+      child: _isLoading
+          ? CircularProgressIndicator()
+          : Text("ORDER NOW",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+      style: ButtonStyle(
+        elevation: MaterialStateProperty.all(5.0),
+        shape: MaterialStateProperty.all<OutlinedBorder>(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
       ),
     );
   }

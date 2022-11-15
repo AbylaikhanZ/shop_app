@@ -12,6 +12,7 @@ class ProductItem extends StatelessWidget {
   //     {@required this.id, @required this.imageUrl, @required this.title});
   @override
   Widget build(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     // in this page, we do not need to rebuild the whole widget, so we set the listen option to false
@@ -35,7 +36,17 @@ class ProductItem extends StatelessWidget {
                 icon: Icon(product.isFavorite
                     ? Icons.favorite
                     : Icons.favorite_border),
-                onPressed: product.toggleFavorite,
+                onPressed: () async {
+                  try {
+                    await product.toggleFavorite();
+                  } catch (error) {
+                    scaffold.showSnackBar(SnackBar(
+                        content: Text(
+                      "Failed to change the favorite status :(",
+                      textAlign: TextAlign.center,
+                    )));
+                  }
+                },
                 color: Theme.of(context).colorScheme.secondary),
           ),
           // we wrap the widget of the leading argument, which is IconButton with a Consumer<Product>

@@ -24,7 +24,6 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       false; // We need this value to be sent to the Products Grid to apply filtering logic
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     if (_isInit) {
       setState(() {
         _isLoading = true;
