@@ -26,7 +26,7 @@ class CartScreen extends StatelessWidget {
                     price: cart.items.values.toList()[i].price,
                     quantity: cart.items.values.toList()[i].quantity,
                     title: cart.items.values.toList()[i].title,
-                    imageURL: cart.items.values.toList()[i].imageURL,
+                    imageURL: cart.items.values.toList()[i].imageUrl,
                     productId: cart.items.keys.toList()[i],
                   )),
               //we use this weird way of sending the data because

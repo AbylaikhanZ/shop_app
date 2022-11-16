@@ -22,6 +22,33 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
+  Future<void> fetchOrders() async {
+    final url = Uri.parse(
+        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/orders.json");
+    final response = await http.get(url);
+    final List<OrderItem> loadedOrders = [];
+    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    if (extractedData == null) {
+      return;
+    }
+    extractedData.forEach((orderId, orderData) {
+      loadedOrders.add(OrderItem(
+          amount: orderData["amount"],
+          dateTime: DateTime.parse(orderData["dateTime"]),
+          id: orderId,
+          products: (orderData["products"] as List<dynamic>)
+              .map((item) => CartItem(
+                  id: item["id"],
+                  title: item["title"],
+                  quantity: item["quantity"],
+                  price: item["price"],
+                  imageUrl: item["imageUrl"]))
+              .toList()));
+    });
+    _orders = loadedOrders.reversed.toList();
+    notifyListeners();
+  }
+
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final url = Uri.parse(
         "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/orders.json");
@@ -35,15 +62,16 @@ class Orders with ChangeNotifier {
             "products": cartProducts
                 .map((e) => {
                       "id": e.id,
-                      "imageURL": e.imageURL,
+                      "imageUrl": e.imageUrl,
                       "title": e.title,
                       "price": e.price,
                       "quantity": e.quantity
                     })
                 .toList(),
           }));
-      //posting the new product to DB. await is doing the action that
+      //posting the new order to DB. await is doing the action that
       //will be done after the synced code is done
+      // here we have a nested map, since the cart products are a list of products
       final newOrder = OrderItem(
           id: json.decode(response.body)["name"],
           amount: total,

@@ -5,14 +5,14 @@ class CartItem {
   final String title;
   final int quantity;
   final double price;
-  final String imageURL;
+  final String imageUrl;
 
   CartItem(
       {@required this.id,
       @required this.title,
       @required this.quantity,
       @required this.price,
-      @required this.imageURL});
+      @required this.imageUrl});
 }
 
 class Cart with ChangeNotifier {
@@ -41,7 +41,7 @@ class Cart with ChangeNotifier {
     return total;
   }
 
-  void addItem(String productId, double price, String title, String imageURL) {
+  void addItem(String productId, double price, String title, String imageUrl) {
     if (_items.containsKey(productId)) {
       _items.update(
           productId,
@@ -50,7 +50,7 @@ class Cart with ChangeNotifier {
               title: existingCartItem.title,
               quantity: existingCartItem.quantity + 1,
               price: existingCartItem.price,
-              imageURL: existingCartItem.imageURL));
+              imageUrl: existingCartItem.imageUrl));
       //update the exxisting cart item if what we are
       // trying to add the the cart is already there
     } else {
@@ -61,7 +61,7 @@ class Cart with ChangeNotifier {
               title: title,
               quantity: 1,
               price: price,
-              imageURL: imageURL));
+              imageUrl: imageUrl));
     }
     notifyListeners(); // create a new cartitem
   }
@@ -81,7 +81,7 @@ class Cart with ChangeNotifier {
           productId,
           (oldCartItem) => CartItem(
                 id: oldCartItem.id,
-                imageURL: oldCartItem.imageURL,
+                imageUrl: oldCartItem.imageUrl,
                 price: oldCartItem.price,
                 quantity: oldCartItem.quantity - 1,
                 title: oldCartItem.title,
