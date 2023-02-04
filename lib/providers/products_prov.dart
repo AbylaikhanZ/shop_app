@@ -41,6 +41,10 @@ class Products_Prov with ChangeNotifier {
     //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     // ),
   ];
+
+  final String authToken;
+  Products_Prov(this.authToken, this._items);
+
   // _ used to prevent access from outside to
   //the items(not final since it will change)
   List<Product> get items {
@@ -60,7 +64,7 @@ class Products_Prov with ChangeNotifier {
 
   Future<void> fetchProducts() async {
     final url = Uri.parse(
-        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json");
+        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken");
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -87,7 +91,7 @@ class Products_Prov with ChangeNotifier {
   Future<void> addProduct(Product product) async {
     // async wraps all the code into Future
     final url = Uri.parse(
-        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json");
+        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken");
     //url of our database
     try {
       //wrap the parts of the code that might throw errors/exceptions
@@ -122,7 +126,7 @@ class Products_Prov with ChangeNotifier {
         _items.indexWhere((element) => element.id == newProduct.id);
     if (prodIndex >= 0) {
       final url = Uri.parse(
-          "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json");
+          "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$authToken");
       // we are using string interpolation to access not the whole folder of our products,
       //but only to access the updated product
       await http.patch(url,
@@ -142,7 +146,7 @@ class Products_Prov with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
-        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json");
+        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$authToken");
     final existingProductIndex =
         _items.indexWhere((element) => element.id == id);
     var existingProduct = _items[existingProductIndex];

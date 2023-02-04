@@ -3,6 +3,7 @@ import '../providers/cart.dart';
 import '../screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/product.dart';
+import '../providers/auth.dart';
 
 class ProductItem extends StatelessWidget {
   // final String id;
@@ -15,6 +16,7 @@ class ProductItem extends StatelessWidget {
     final scaffold = ScaffoldMessenger.of(context);
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
     // in this page, we do not need to rebuild the whole widget, so we set the listen option to false
     // the only thing that updates is the favorite button
     return ClipRRect(
@@ -38,7 +40,7 @@ class ProductItem extends StatelessWidget {
                     : Icons.favorite_border),
                 onPressed: () async {
                   try {
-                    await product.toggleFavorite();
+                    await product.toggleFavorite(authData.token);
                   } catch (error) {
                     scaffold.showSnackBar(SnackBar(
                         content: Text(

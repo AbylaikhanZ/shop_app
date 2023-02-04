@@ -11,11 +11,23 @@ class Auth with ChangeNotifier {
   DateTime _expiryDate;
   String _userId;
 
+  bool get isAuth {
+    return token != null;
+  }
+
+  String get token {
+    if (_expiryDate != null &&
+        _token != null &&
+        _expiryDate.isAfter(DateTime.now())) {
+      return _token;
+    }
+    return null;
+  }
+
   Future<void> _authenticate(
       String email, String password, String urlType) async {
     final url = Uri.parse(
         "https://identitytoolkit.googleapis.com/v1/accounts:$urlType?key=AIzaSyA_T-UJA84_qv5KJQW56l6-04NTn4bZfIw");
-    // ignore: unused_local_variable
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -27,6 +39,11 @@ class Auth with ChangeNotifier {
       if (responseData["error"] != null) {
         throw HttpException(responseData["error"]["message"]);
       }
+      _token = responseData["idToken"];
+      _userId = responseData["localId"];
+      _expiryDate = DateTime.now()
+          .add(Duration(seconds: int.parse(responseData["expiresIn"])));
+      notifyListeners();
     } catch (error) {
       throw error;
     }

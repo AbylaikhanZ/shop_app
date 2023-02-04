@@ -22,6 +22,8 @@ class Cart with ChangeNotifier {
   Map<String, CartItem> get items {
     return {..._items};
   }
+
+
   // this instance of items is public
 
   int get countItems {
