@@ -21,20 +21,13 @@ class Product with ChangeNotifier {
       @required this.price,
       @required this.title});
 
-  Future<void> toggleFavorite(String authToken) async {
+  Future<void> toggleFavorite(String authToken, String userId) async {
     isFavorite = !isFavorite;
     notifyListeners();
     final url = Uri.parse(
-        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$authToken");
+        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/userFavorites/$userId/$id.json?auth=$authToken");
     try {
-      final response = await http.patch(url,
-          body: json.encode({
-            "isFavorite": isFavorite,
-            "title": title,
-            "description": description,
-            "imageUrl": imageUrl,
-            "price": price,
-          }));
+      final response = await http.put(url, body: json.encode(isFavorite));
       if (response.statusCode >= 400) {
         isFavorite = !isFavorite;
         notifyListeners();

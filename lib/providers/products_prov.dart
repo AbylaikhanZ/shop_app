@@ -43,7 +43,8 @@ class Products_Prov with ChangeNotifier {
   ];
 
   final String authToken;
-  Products_Prov(this.authToken, this._items);
+  final String userId;
+  Products_Prov(this.authToken, this.userId, this._items);
 
   // _ used to prevent access from outside to
   //the items(not final since it will change)
@@ -62,24 +63,32 @@ class Products_Prov with ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  Future<void> fetchProducts() async {
-    final url = Uri.parse(
-        "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken");
+  Future<void> fetchProducts([bool filterByUser = false]) async {
+    final urlString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : "";
+    var url = Uri.parse(
+        'https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken&$urlString');
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
       }
+      url = Uri.parse(
+          "https://shop-app-d1490-default-rtdb.europe-west1.firebasedatabase.app/userFavorites/$userId.json?auth=$authToken");
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
-            id: prodId,
-            description: prodData["description"],
-            imageUrl: prodData["imageUrl"],
-            price: prodData["price"],
-            title: prodData["title"],
-            isFavorite: prodData["isFavorite"]));
+          id: prodId,
+          description: prodData["description"],
+          imageUrl: prodData["imageUrl"],
+          price: prodData["price"],
+          title: prodData["title"],
+          isFavorite:
+              favoriteData == null ? false : favoriteData[prodId] ?? false,
+        ));
       });
       _items = loadedProducts;
       notifyListeners();
@@ -102,6 +111,7 @@ class Products_Prov with ChangeNotifier {
             "price": product.price,
             "title": product.title,
             "isFavorite": product.isFavorite,
+            "creatorId": userId,
           }));
       //posting the new product to DB. await is doing the action that
       //will be done after the synced code is done
