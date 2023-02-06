@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/helpers/custom_route.dart';
 import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/screens/auth_screen.dart';
 import 'package:shop_app/screens/products_overview_screen.dart';
@@ -43,6 +44,10 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                   primarySwatch: Colors.deepPurple,
                   fontFamily: "Lato",
+                  // pageTransitionsTheme: PageTransitionsTheme(builders: {
+                  //   TargetPlatform.android: CustomPageTransitionBuilder(),
+                  //   // TargetPlatform.iOS: ,
+                  // }),
                   colorScheme: ColorScheme(
                       //colorScheme is used since accentColor is deprecated
                       brightness: Brightness.light,

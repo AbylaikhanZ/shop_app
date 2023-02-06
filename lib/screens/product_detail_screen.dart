@@ -16,15 +16,37 @@ class ProductDetailScreen extends StatelessWidget {
     // listen false is needed in order to not update the page, when, for example, a new item is added to the list
     // in this case we only need to get the data once, no need to update it every time
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loadedProduct.title),
-      ),
-      body: SingleChildScrollView(
-          child: Column(
-        children: [
-          Image.network(
-            loadedProduct.imageUrl,
+        // appBar: AppBar(
+        //   title: Text(loadedProduct.title),
+        // ),
+        body: CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          expandedHeight: 300,
+          centerTitle: true,
+          pinned: true,
+          flexibleSpace: FlexibleSpaceBar(
+            centerTitle: true,
+            title: Container(
+                height: 25,
+                width: double.infinity,
+                //decoration: BoxDecoration(color: Colors.transparent),
+                alignment: Alignment.center,
+                child: Text(
+                  loadedProduct.title,
+                )),
+            background: Hero(
+              tag: productId,
+              child: Image.network(
+                loadedProduct.imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
+          //backgroundColor: Colors.white,
+        ),
+        SliverList(
+            delegate: SliverChildListDelegate([
           SizedBox(
             height: 10,
           ),
@@ -48,21 +70,24 @@ class ProductDetailScreen extends StatelessWidget {
               loadedProduct.description,
               style: TextStyle(fontSize: 18),
               softWrap: true,
+              textAlign: TextAlign.center,
             ),
-            width: double.infinity,
-            alignment: Alignment.center,
+          ),
+          SizedBox(
+            height: 800,
           )
-        ],
-      )),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.background,
-        onPressed: () {
-          cart.addItem(loadedProduct.id, loadedProduct.price,
-              loadedProduct.title, loadedProduct.imageUrl);
-        },
-      ),
-    );
+        ]))
+      ],
+    )
+        // floatingActionButton: FloatingActionButton(
+        //   child: Icon(Icons.add),
+        //   backgroundColor: Theme.of(context).colorScheme.primary,
+        //   foregroundColor: Theme.of(context).colorScheme.background,
+        //   onPressed: () {
+        //     cart.addItem(loadedProduct.id, loadedProduct.price,
+        //         loadedProduct.title, loadedProduct.imageUrl);
+        //   },
+        // ),
+        );
   }
 }
